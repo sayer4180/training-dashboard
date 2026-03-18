@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Training Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bark:     #3d2b1f;
+    --soil:     #5c3d2e;
+    --clay:     #a0522d;
+    --terracotta: #c1623f;
+    --sand:     #e8d5b7;
+    --cream:    #f5efe4;
+    --sage:     #7a8c6e;
+    --sage-light: #c8d4bc;
+    --moss:     #4a5e40;
+    --stone:    #9e9284;
+    --parchment:#faf6ef;
+    --text-dark: #2c1f14;
+    --text-mid:  #6b5344;
+    --text-light:#a08878;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--parchment);
+    color: var(--text-dark);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 10% 0%, rgba(193,98,63,0.07) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 100%, rgba(122,140,110,0.09) 0%, transparent 50%);
+  }
+
+  header {
+    padding: 2.5rem 3rem 1.5rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(92,61,46,0.12);
+  }
+  .header-left h1 {
+    font-family: 'Lora', serif;
+    font-size: 1.75rem;
+    font-weight: 400;
+    color: var(--bark);
+    letter-spacing: -0.01em;
+  }
+  .header-left .tagline {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 2px;
+    font-weight: 300;
+  }
+  .header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+  #clock {
+    font-family: 'Lora', serif;
+    font-size: 1.4rem;
+    color: var(--soil);
+    font-weight: 400;
+  }
+  #date-display {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    letter-spacing: 0.05em;
+  }
+
+  .search-bar {
+    padding: 1.25rem 3rem;
+    border-bottom: 1px solid rgba(92,61,46,0.08);
+  }
+  .search-wrap {
+    position: relative;
+    max-width: 520px;
+  }
+  .search-wrap input {
+    width: 100%;
+    padding: 0.65rem 1rem 0.65rem 2.6rem;
+    border: 1px solid rgba(92,61,46,0.2);
+    border-radius: 24px;
+    background: rgba(255,255,255,0.6);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    color: var(--text-dark);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .search-wrap input::placeholder { color: var(--text-light); }
+  .search-wrap input:focus {
+    border-color: var(--terracotta);
+    box-shadow: 0 0 0 3px rgba(193,98,63,0.1);
+  }
+  .search-icon {
+    position: absolute;
+    left: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 15px;
+    color: var(--stone);
+  }
+
+  nav {
+    padding: 0 3rem;
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid rgba(92,61,46,0.12);
+    overflow-x: auto;
+  }
+  nav button {
+    padding: 0.9rem 1.35rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: var(--text-light);
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+    margin-bottom: -1px;
+  }
+  nav button:hover { color: var(--soil); }
+  nav button.active {
+    color: var(--terracotta);
+    border-bottom-color: var(--terracotta);
+    font-weight: 500;
+  }
+
+  main { padding: 2rem 3rem 3rem; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+  .section-header h2 {
+    font-family: 'Lora', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: var(--bark);
+  }
+  .section-header .open-drive {
+    font-size: 0.75rem;
+    color: var(--terracotta);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .section-header .open-drive:hover { opacity: 1; text-decoration: underline; }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.65);
+    border: 1px solid rgba(92,61,46,0.13);
+    border-radius: 10px;
+    padding: 1.1rem 1.25rem 1rem;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--card-accent, var(--terracotta));
+    opacity: 0.5;
+    border-radius: 10px 0 0 10px;
+    transition: opacity 0.15s;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(61,43,31,0.1); border-color: rgba(92,61,46,0.22); }
+  .card:hover::before { opacity: 1; }
+
+  .card-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-light); margin-bottom: 0.4rem; }
+  .card-title { font-family: 'Lora', serif; font-size: 0.975rem; font-weight: 400; color: var(--bark); line-height: 1.4; margin-bottom: 0.35rem; }
+  .card-desc { font-size: 0.78rem; color: var(--text-mid); line-height: 1.5; }
+  .card-tag { display: inline-block; margin-top: 0.6rem; font-size: 0.68rem; padding: 2px 8px; border-radius: 20px; background: var(--card-tag-bg, var(--sand)); color: var(--card-tag-color, var(--soil)); letter-spacing: 0.03em; }
+
+  .accent-sage   { --card-accent: var(--sage); --card-tag-bg: var(--sage-light); --card-tag-color: var(--moss); }
+  .accent-clay   { --card-accent: var(--clay); --card-tag-bg: #ead4c4; --card-tag-color: var(--soil); }
+  .accent-terra  { --card-accent: var(--terracotta); }
+  .accent-stone  { --card-accent: var(--stone); --card-tag-bg: #e6e0d8; --card-tag-color: #5a504a; }
+
+  .today-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+  .today-card { background: rgba(255,255,255,0.5); border: 1px solid rgba(92,61,46,0.12); border-radius: 10px; padding: 1.1rem 1.25rem; }
+  .today-card h3 { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text-light); margin-bottom: 0.75rem; }
+  .quick-link { display: flex; align-items: center; gap: 8px; padding: 0.45rem 0; border-bottom: 1px solid rgba(92,61,46,0.07); font-size: 0.83rem; color: var(--text-dark); text-decoration: none; transition: color 0.15s; cursor: pointer; }
+  .quick-link:last-child { border-bottom: none; }
+  .quick-link:hover { color: var(--terracotta); }
+  .quick-link .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--dot-color, var(--terracotta)); flex-shrink: 0; }
+
+  #search-results { display: none; position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: white; border: 1px solid rgba(92,61,46,0.18); border-radius: 12px; box-shadow: 0 8px 32px rgba(61,43,31,0.12); z-index: 100; max-height: 320px; overflow-y: auto; }
+  #search-results.show { display: block; }
+  .sr-item { padding: 0.75rem 1.1rem; border-bottom: 1px solid rgba(92,61,46,0.07); cursor: pointer; transition: background 0.1s; }
+  .sr-item:last-child { border-bottom: none; }
+  .sr-item:hover { background: var(--cream); }
+  .sr-item .sr-title { font-size: 0.875rem; color: var(--bark); }
+  .sr-item .sr-section { font-size: 0.72rem; color: var(--text-light); margin-top: 2px; }
+
+  .note-intro { font-size: 0.85rem; color: var(--text-mid); margin-bottom: 1.25rem; line-height: 1.6; max-width: 560px; }
+
+  /* ── COACHING TAB ── */
+  .coaching-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .coaching-note-card {
+    background: rgba(255,255,255,0.65);
+    border: 1px solid rgba(92,61,46,0.13);
+    border-radius: 10px;
+    padding: 1.75rem 2rem;
+    min-height: 400px;
+  }
+
+  .coaching-note-card .note-subject {
+    font-family: 'Lora', serif;
+    font-size: 1.15rem;
+    font-weight: 400;
+    color: var(--bark);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(92,61,46,0.1);
+  }
+
+  .coaching-note-body {
+    font-size: 0.845rem;
+    line-height: 1.75;
+    color: var(--text-dark);
+    white-space: pre-wrap;
+  }
+
+  .coaching-note-body .c-header {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-top: 1.2rem;
+    margin-bottom: 0.3rem;
+  }
+  .coaching-note-body .c-header:first-child { margin-top: 0; }
+
+  .coaching-note-body .c-bullet {
+    display: block;
+    padding-left: 1rem;
+    position: relative;
+    color: var(--text-mid);
+  }
+  .coaching-note-body .c-bullet::before {
+    content: '•';
+    position: absolute;
+    left: 0.1rem;
+    color: var(--clay);
+  }
+
+  .coaching-note-body .c-line { display: block; }
+
+  .coaching-note-body em {
+    font-style: italic;
+    color: var(--text-mid);
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 3px;
+  }
+
+  .coaching-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    color: var(--text-light);
+    text-align: center;
+    gap: 0.5rem;
+  }
+  .coaching-empty .empty-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .coaching-empty p { font-size: 0.83rem; line-height: 1.7; }
+
+  .coaching-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .sidebar-card {
+    background: rgba(255,255,255,0.5);
+    border: 1px solid rgba(92,61,46,0.12);
+    border-radius: 10px;
+    padding: 1.1rem 1.25rem;
+  }
+
+  .sidebar-card h3 {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 0.75rem;
+  }
+
+  .sidebar-card textarea {
+    width: 100%;
+    background: var(--parchment);
+    border: 1px solid rgba(92,61,46,0.18);
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    color: var(--text-dark);
+    padding: 0.65rem 0.85rem;
+    resize: vertical;
+    min-height: 140px;
+    outline: none;
+    line-height: 1.55;
+    transition: border-color 0.2s;
+  }
+  .sidebar-card textarea:focus { border-color: var(--terracotta); }
+  .sidebar-card textarea::placeholder { color: var(--text-light); }
+
+  .btn-save {
+    margin-top: 0.6rem;
+    width: 100%;
+    padding: 0.6rem 1rem;
+    background: var(--terracotta);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .btn-save:hover { background: var(--clay); }
+
+  .btn-clear {
+    margin-top: 0.4rem;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background: none;
+    color: var(--text-light);
+    border: 1px solid rgba(92,61,46,0.15);
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .btn-clear:hover { color: var(--soil); border-color: var(--stone); }
+
+  .save-status {
+    font-size: 0.75rem;
+    color: var(--sage);
+    margin-top: 0.4rem;
+    min-height: 1rem;
+    text-align: center;
+  }
+
+  .last-saved {
+    font-size: 0.72rem;
+    color: var(--text-light);
+    margin-top: 0.5rem;
+    text-align: center;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .coaching-layout { grid-template-columns: 1fr; }
+    .coaching-sidebar { order: -1; }
+  }
+  @media (max-width: 700px) {
+    header, .search-bar, nav, main { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .today-grid { grid-template-columns: 1fr; }
+    .card-grid { grid-template-columns: 1fr; }
+    .coaching-note-card { padding: 1.25rem; }
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--sand); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Training Studio</h1>
+    <div class="tagline">Knowledge &amp; workflow dashboard</div>
+  </div>
+  <div class="header-right">
+    <div id="clock"></div>
+    <div id="date-display"></div>
+  </div>
+</header>
+
+<div class="search-bar">
+  <div class="search-wrap">
+    <svg class="search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+      <circle cx="7" cy="7" r="4.5"/><line x1="10.5" y1="10.5" x2="14" y2="14"/>
+    </svg>
+    <input type="text" id="search-input" placeholder="Search exercises, clients, templates…" autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+</div>
+
+<nav id="main-nav">
+  <button class="active" data-section="home">Home</button>
+  <button data-section="exercises">Exercise Library</button>
+  <button data-section="programming">Programming</button>
+  <button data-section="clients">Clients</button>
+  <button data-section="nutrition">Nutrition</button>
+  <button data-section="admin">Admin</button>
+  <button data-section="coaching">CrossFit Coaching</button>
+</nav>
+
+<main>
+
+  <!-- HOME -->
+  <div class="section active" id="home">
+    <div class="today-grid">
+      <div class="today-card">
+        <h3>Quick Access</h3>
+        <a class="quick-link" href="https://drive.google.com" target="_blank">
+          <span class="dot" style="--dot-color: var(--terracotta)"></span> Open Google Drive
+        </a>
+        <a class="quick-link" href="https://keep.google.com" target="_blank">
+          <span class="dot" style="--dot-color: var(--sage)"></span> Open Google Keep
+        </a>
+        <a class="quick-link" href="https://drive.google.com/drive/search?q=exercise+library" target="_blank">
+          <span class="dot" style="--dot-color: var(--clay)"></span> Exercise Library folder
+        </a>
+        <a class="quick-link" href="https://drive.google.com/drive/search?q=workout+template" target="_blank">
+          <span class="dot" style="--dot-color: var(--stone)"></span> Templates folder
+        </a>
+      </div>
+      <div class="today-card">
+        <h3>Jump To</h3>
+        <div class="quick-link" onclick="switchTab('exercises')">
+          <span class="dot" style="--dot-color: var(--terracotta)"></span> Browse exercise library
+        </div>
+        <div class="quick-link" onclick="switchTab('clients')">
+          <span class="dot" style="--dot-color: var(--sage)"></span> Open a client file
+        </div>
+        <div class="quick-link" onclick="switchTab('programming')">
+          <span class="dot" style="--dot-color: var(--clay)"></span> Review a program template
+        </div>
+        <div class="quick-link" onclick="switchTab('coaching')">
+          <span class="dot" style="--dot-color: var(--stone)"></span> Wednesday coaching note
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISE LIBRARY -->
+  <div class="section" id="exercises">
+    <div class="section-header">
+      <h2>Exercise Library</h2>
+      <a class="open-drive" href="https://drive.google.com/drive/search?q=exercise+library" target="_blank">Open in Drive ↗</a>
+    </div>
+    <div class="card-grid">
+      <a class="card accent-terra" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Lower body</div>
+        <div class="card-title">Hip Hinge Progressions</div>
+        <div class="card-desc">RDL, single-leg RDL, hip thrust — cues and loading guidelines</div>
+        <span class="card-tag">Posterior chain</span>
+      </a>
+      <a class="card accent-sage" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Upper body</div>
+        <div class="card-title">Vertical Pull Variations</div>
+        <div class="card-desc">Pull-up, lat pulldown, cable pullover — grip and tempo notes</div>
+        <span class="card-tag">Back</span>
+      </a>
+      <a class="card accent-clay" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Core</div>
+        <div class="card-title">Anti-Rotation Drills</div>
+        <div class="card-desc">Pallof press, Copenhagen, dead bug series</div>
+        <span class="card-tag">Stability</span>
+      </a>
+      <a class="card accent-stone" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Mobility</div>
+        <div class="card-title">Hip Mobility Sequence</div>
+        <div class="card-desc">90/90, pigeon, CARs — warm-up and end of session use</div>
+        <span class="card-tag">Flexibility</span>
+      </a>
+      <a class="card accent-terra" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Lower body</div>
+        <div class="card-title">Squat Pattern Library</div>
+        <div class="card-desc">Goblet, back, front, split squat — technique breakdowns</div>
+        <span class="card-tag">Quads / Glutes</span>
+      </a>
+      <a class="card accent-sage" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Upper body</div>
+        <div class="card-title">Horizontal Push &amp; Pull</div>
+        <div class="card-desc">Bench press, row, cable press — scapular mechanics</div>
+        <span class="card-tag">Chest / Back</span>
+      </a>
+      <a class="card accent-clay" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Conditioning</div>
+        <div class="card-title">Loaded Carry Variations</div>
+        <div class="card-desc">Farmer, suitcase, overhead — unilateral stability focus</div>
+        <span class="card-tag">Full body</span>
+      </a>
+      <a class="card accent-stone" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Warm-up</div>
+        <div class="card-title">General Movement Prep</div>
+        <div class="card-desc">Activation drills, dynamic warm-up sequences</div>
+        <span class="card-tag">Prep</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- PROGRAMMING -->
+  <div class="section" id="programming">
+    <div class="section-header">
+      <h2>Program Templates</h2>
+      <a class="open-drive" href="https://drive.google.com/drive/search?q=workout+template" target="_blank">Open in Drive ↗</a>
+    </div>
+    <div class="card-grid">
+      <a class="card accent-terra" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Template</div>
+        <div class="card-title">3-Day Full Body Strength</div>
+        <div class="card-desc">Beginner–intermediate, compound-focused, progressive overload</div>
+        <span class="card-tag">Strength</span>
+      </a>
+      <a class="card accent-sage" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Template</div>
+        <div class="card-title">4-Day Upper / Lower Split</div>
+        <div class="card-desc">Intermediate, higher volume, hypertrophy emphasis</div>
+        <span class="card-tag">Hypertrophy</span>
+      </a>
+      <a class="card accent-clay" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Template</div>
+        <div class="card-title">Mobility &amp; Recovery Week</div>
+        <div class="card-desc">Deload protocol, movement quality, parasympathetic work</div>
+        <span class="card-tag">Deload</span>
+      </a>
+      <a class="card accent-stone" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Template</div>
+        <div class="card-title">Athletic Performance Block</div>
+        <div class="card-desc">Power, speed, conditioning — sport general prep</div>
+        <span class="card-tag">Athletic</span>
+      </a>
+      <a class="card accent-terra" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Template</div>
+        <div class="card-title">Post-Rehab Return to Load</div>
+        <div class="card-desc">Conservative loading, tissue tolerance, pain monitoring</div>
+        <span class="card-tag">Rehab bridge</span>
+      </a>
+      <a class="card accent-sage" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Blank</div>
+        <div class="card-title">New Program Template</div>
+        <div class="card-desc">Empty structure — fill in for a new client block</div>
+        <span class="card-tag">Blank</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- CLIENTS -->
+  <div class="section" id="clients">
+    <div class="section-header">
+      <h2>Client Notes</h2>
+      <a class="open-drive" href="https://drive.google.com/drive/search?q=client" target="_blank">Open in Drive ↗</a>
+    </div>
+    <p class="note-intro">Each card links to that client's folder in Drive. Replace the placeholder links and names with your actual clients.</p>
+    <div class="card-grid">
+      <a class="card accent-terra" href="REPLACE_WITH_CLIENT_FOLDER_LINK" target="_blank">
+        <div class="card-label">Client</div>
+        <div class="card-title">Client Name</div>
+        <div class="card-desc">Notes, measurements, current program</div>
+        <span class="card-tag">Active</span>
+      </a>
+      <a class="card accent-sage" href="REPLACE_WITH_CLIENT_FOLDER_LINK" target="_blank">
+        <div class="card-label">Client</div>
+        <div class="card-title">Client Name</div>
+        <div class="card-desc">Notes, measurements, current program</div>
+        <span class="card-tag">Active</span>
+      </a>
+      <a class="card accent-clay" href="REPLACE_WITH_CLIENT_FOLDER_LINK" target="_blank">
+        <div class="card-label">Client</div>
+        <div class="card-title">Client Name</div>
+        <div class="card-desc">Notes, measurements, current program</div>
+        <span class="card-tag">Active</span>
+      </a>
+      <a class="card accent-stone" href="REPLACE_WITH_CLIENT_FOLDER_LINK" target="_blank">
+        <div class="card-label">Client</div>
+        <div class="card-title">Client Name</div>
+        <div class="card-desc">Notes, measurements, current program</div>
+        <span class="card-tag">On hold</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- NUTRITION -->
+  <div class="section" id="nutrition">
+    <div class="section-header">
+      <h2>Nutrition References</h2>
+      <a class="open-drive" href="https://drive.google.com/drive/search?q=nutrition" target="_blank">Open in Drive ↗</a>
+    </div>
+    <div class="card-grid">
+      <a class="card accent-terra" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Reference</div>
+        <div class="card-title">Protein Targets by Goal</div>
+        <div class="card-desc">Body comp, muscle building, weight loss — ranges and timing</div>
+        <span class="card-tag">Macros</span>
+      </a>
+      <a class="card accent-sage" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Reference</div>
+        <div class="card-title">Calorie Estimation Guide</div>
+        <div class="card-desc">TDEE, activity multipliers, deficit/surplus guidelines</div>
+        <span class="card-tag">Calories</span>
+      </a>
+      <a class="card accent-clay" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Reference</div>
+        <div class="card-title">Pre &amp; Post Workout Nutrition</div>
+        <div class="card-desc">Timing, food options, client-friendly examples</div>
+        <span class="card-tag">Timing</span>
+      </a>
+      <a class="card accent-stone" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Reference</div>
+        <div class="card-title">Common Food Protein Sources</div>
+        <div class="card-desc">Quick reference sheet for client conversations</div>
+        <span class="card-tag">Quick ref</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div class="section" id="admin">
+    <div class="section-header">
+      <h2>Admin &amp; Business</h2>
+      <a class="open-drive" href="https://drive.google.com" target="_blank">Open in Drive ↗</a>
+    </div>
+    <div class="card-grid">
+      <a class="card accent-terra" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Document</div>
+        <div class="card-title">Client Onboarding Form</div>
+        <div class="card-desc">PAR-Q, liability waiver, intake questionnaire</div>
+        <span class="card-tag">Onboarding</span>
+      </a>
+      <a class="card accent-sage" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Document</div>
+        <div class="card-title">Session Rate Sheet</div>
+        <div class="card-desc">Pricing, package options, payment policy</div>
+        <span class="card-tag">Billing</span>
+      </a>
+      <a class="card accent-clay" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Document</div>
+        <div class="card-title">Progress Check-In Template</div>
+        <div class="card-desc">Monthly review structure, measurements, photos, feedback</div>
+        <span class="card-tag">Check-in</span>
+      </a>
+      <a class="card accent-stone" href="REPLACE_WITH_YOUR_DRIVE_LINK" target="_blank">
+        <div class="card-label">Document</div>
+        <div class="card-title">Session Notes Template</div>
+        <div class="card-desc">Per-session log — loads, notes, next steps</div>
+        <span class="card-tag">Logging</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- WEDNESDAY COACHING -->
+  <div class="section" id="coaching">
+    <div class="section-header">
+      <h2>CrossFit Coaching</h2>
+      <button class="open-drive" onclick="showEdit()">Update note ↗</button>
+    </div>
+
+    <div class="coaching-layout">
+
+      <!-- Note display -->
+      <div class="coaching-note-card">
+        <div id="coaching-display">
+          <div class="coaching-empty">
+            <div class="empty-icon">📋</div>
+            <p>No note yet.<br>Paste your formatted note from Claude<br>using the panel on the right.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="coaching-sidebar">
+        <div class="sidebar-card" id="edit-panel">
+          <h3>Paste note from Claude</h3>
+          <textarea id="note-input" placeholder="Paste the formatted coaching note here…"></textarea>
+          <button class="btn-save" onclick="saveNote()">Save Note</button>
+          <button class="btn-clear" onclick="clearNote()">Clear saved note</button>
+          <div class="save-status" id="save-status"></div>
+        </div>
+        <div class="sidebar-card">
+          <h3>This Wednesday</h3>
+          <div id="coaching-meta" style="font-size:0.82rem; color:var(--text-mid); line-height:1.7;">
+            No note saved yet.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<script>
+  // ── CLOCK ──
+  function updateClock() {
+    const now = new Date();
+    const h = now.getHours().toString().padStart(2,'0');
+    const m = now.getMinutes().toString().padStart(2,'0');
+    document.getElementById('clock').textContent = h + ':' + m;
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    document.getElementById('date-display').textContent =
+      days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate();
+  }
+  updateClock();
+  setInterval(updateClock, 10000);
+
+  // ── TABS ──
+  function switchTab(sectionId) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(sectionId).classList.add('active');
+    const btn = document.querySelector('[data-section="' + sectionId + '"]');
+    if (btn) btn.classList.add('active');
+  }
+  document.querySelectorAll('nav button').forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.section));
+  });
+
+  // ── SEARCH ──
+  const searchIndex = [
+    { title: 'Hip Hinge Progressions', section: 'Exercise Library', tab: 'exercises' },
+    { title: 'Vertical Pull Variations', section: 'Exercise Library', tab: 'exercises' },
+    { title: 'Anti-Rotation Drills', section: 'Exercise Library', tab: 'exercises' },
+    { title: 'Hip Mobility Sequence', section: 'Exercise Library', tab: 'exercises' },
+    { title: 'Squat Pattern Library', section: 'Exercise Library', tab: 'exercises' },
+    { title: 'Horizontal Push & Pull', section: 'Exercise Library', tab: 'exercises' },
+    { title: 'Loaded Carry Variations', section: 'Exercise Library', tab: 'exercises' },
+    { title: 'General Movement Prep', section: 'Exercise Library', tab: 'exercises' },
+    { title: '3-Day Full Body Strength', section: 'Programming', tab: 'programming' },
+    { title: '4-Day Upper / Lower Split', section: 'Programming', tab: 'programming' },
+    { title: 'Mobility & Recovery Week', section: 'Programming', tab: 'programming' },
+    { title: 'Athletic Performance Block', section: 'Programming', tab: 'programming' },
+    { title: 'Post-Rehab Return to Load', section: 'Programming', tab: 'programming' },
+    { title: 'Protein Targets by Goal', section: 'Nutrition', tab: 'nutrition' },
+    { title: 'Calorie Estimation Guide', section: 'Nutrition', tab: 'nutrition' },
+    { title: 'Pre & Post Workout Nutrition', section: 'Nutrition', tab: 'nutrition' },
+    { title: 'Client Onboarding Form', section: 'Admin', tab: 'admin' },
+    { title: 'Session Rate Sheet', section: 'Admin', tab: 'admin' },
+    { title: 'Progress Check-In Template', section: 'Admin', tab: 'admin' },
+    { title: 'Session Notes Template', section: 'Admin', tab: 'admin' },
+    { title: 'CrossFit Coaching Note', section: 'Coaching', tab: 'coaching' },
+  ];
+
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+
+  searchInput.addEventListener('input', function() {
+    const q = this.value.trim().toLowerCase();
+    if (!q) { searchResults.classList.remove('show'); return; }
+    const hits = searchIndex.filter(item => item.title.toLowerCase().includes(q));
+    if (!hits.length) { searchResults.classList.remove('show'); return; }
+    searchResults.innerHTML = hits.map(item =>
+      '<div class="sr-item" data-tab="' + item.tab + '">' +
+        '<div class="sr-title">' + item.title + '</div>' +
+        '<div class="sr-section">' + item.section + '</div>' +
+      '</div>'
+    ).join('');
+    searchResults.classList.add('show');
+    searchResults.querySelectorAll('.sr-item').forEach(el => {
+      el.addEventListener('click', function() {
+        switchTab(this.dataset.tab);
+        searchResults.classList.remove('show');
+        searchInput.value = '';
+      });
+    });
+  });
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.search-wrap')) searchResults.classList.remove('show');
+  });
+
+  // ── COACHING NOTE ──
+  function renderNote(text) {
+    const display = document.getElementById('coaching-display');
+    if (!text || !text.trim()) {
+      display.innerHTML = '<div class="coaching-empty"><div class="empty-icon">📋</div><p>No note yet.<br>Paste your formatted note from Claude<br>using the panel on the right.</p></div>';
+      document.getElementById('coaching-meta').textContent = 'No note saved yet.';
+      return;
+    }
+
+    const lines = text.split('\n');
+    let subjectLine = '';
+    let bodyHtml = '';
+
+    for (const line of lines) {
+      if (line.toLowerCase().startsWith('subject:')) {
+        subjectLine = line.replace(/^subject:\s*/i, '').trim();
+        continue;
+      }
+      // Bold header: **text** or <b>text</b>
+      const boldMatch = line.match(/^\*\*(.+?)\*\*$/) || line.match(/^<b>(.+?)<\/b>$/);
+      if (boldMatch) {
+        bodyHtml += `<span class="c-header">${boldMatch[1]}</span>`;
+        continue;
+      }
+      if (line.trim().startsWith('•') || line.trim().startsWith('- ')) {
+        const content = line.replace(/^\s*[•\-]\s*/, '');
+        bodyHtml += `<span class="c-bullet">${fmt(content)}</span>`;
+        continue;
+      }
+      if (line.trim() === '') {
+        bodyHtml += `<span class="c-line">&nbsp;</span>`;
+        continue;
+      }
+      bodyHtml += `<span class="c-line">${fmt(line)}</span>`;
+    }
+
+    const subject = subjectLine || 'Coaching Note';
+    display.innerHTML =
+      `<div class="note-subject">${subject}</div>` +
+      `<div class="coaching-note-body">${bodyHtml}</div>`;
+
+    document.getElementById('coaching-meta').innerHTML =
+      `<strong style="color:var(--bark)">${subject}</strong><br>Saved to dashboard`;
+  }
+
+  function fmt(text) {
+    return text.replace(/__(.+?)__/g, '<em>$1</em>');
+  }
+
+  async function loadNote() {
+    try {
+      const result = await window.storage.get('coaching_note');
+      if (result && result.value) renderNote(result.value);
+    } catch (e) { /* no saved note */ }
+  }
+
+  async function saveNote() {
+    const text = document.getElementById('note-input').value.trim();
+    if (!text) return;
+    try {
+      await window.storage.set('coaching_note', text);
+      renderNote(text);
+      document.getElementById('note-input').value = '';
+      document.getElementById('save-status').textContent = 'Saved ✓';
+      setTimeout(() => { document.getElementById('save-status').textContent = ''; }, 2500);
+    } catch (e) {
+      document.getElementById('save-status').textContent = 'Save failed.';
+    }
+  }
+
+  async function clearNote() {
+    try {
+      await window.storage.delete('coaching_note');
+      renderNote('');
+      document.getElementById('save-status').textContent = 'Cleared.';
+      setTimeout(() => { document.getElementById('save-status').textContent = ''; }, 2000);
+    } catch (e) {}
+  }
+
+  function showEdit() {
+    document.getElementById('note-input').focus();
+    document.getElementById('note-input').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  loadNote();
+</script>
+</body>
+</html>
