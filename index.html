@@ -231,185 +231,13 @@
 
   .note-intro { font-size: 0.85rem; color: var(--text-mid); margin-bottom: 1.25rem; line-height: 1.6; max-width: 560px; }
 
-  /* ── COACHING TAB ── */
-  .coaching-layout {
-    display: grid;
-    grid-template-columns: 1fr 340px;
-    gap: 1.5rem;
-    align-items: start;
-  }
-
-  .coaching-note-card {
-    background: rgba(255,255,255,0.65);
-    border: 1px solid rgba(92,61,46,0.13);
-    border-radius: 10px;
-    padding: 1.75rem 2rem;
-    min-height: 400px;
-  }
-
-  .coaching-note-card .note-subject {
-    font-family: 'Lora', serif;
-    font-size: 1.15rem;
-    font-weight: 400;
-    color: var(--bark);
-    margin-bottom: 1.25rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid rgba(92,61,46,0.1);
-  }
-
-  .coaching-note-body {
-    font-size: 0.845rem;
-    line-height: 1.75;
-    color: var(--text-dark);
-    white-space: pre-wrap;
-  }
-
-  .coaching-note-body .c-header {
-    display: block;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    color: var(--terracotta);
-    margin-top: 1.2rem;
-    margin-bottom: 0.3rem;
-  }
-  .coaching-note-body .c-header:first-child { margin-top: 0; }
-
-  .coaching-note-body .c-bullet {
-    display: block;
-    padding-left: 1rem;
-    position: relative;
-    color: var(--text-mid);
-  }
-  .coaching-note-body .c-bullet::before {
-    content: '•';
-    position: absolute;
-    left: 0.1rem;
-    color: var(--clay);
-  }
-
-  .coaching-note-body .c-line { display: block; }
-
-  .coaching-note-body em {
-    font-style: italic;
-    color: var(--text-mid);
-    text-decoration: underline;
-    text-decoration-style: dotted;
-    text-underline-offset: 3px;
-  }
-
-  .coaching-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 300px;
-    color: var(--text-light);
-    text-align: center;
-    gap: 0.5rem;
-  }
-  .coaching-empty .empty-icon { font-size: 2rem; margin-bottom: 0.5rem; }
-  .coaching-empty p { font-size: 0.83rem; line-height: 1.7; }
-
-  .coaching-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .sidebar-card {
-    background: rgba(255,255,255,0.5);
-    border: 1px solid rgba(92,61,46,0.12);
-    border-radius: 10px;
-    padding: 1.1rem 1.25rem;
-  }
-
-  .sidebar-card h3 {
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    color: var(--text-light);
-    margin-bottom: 0.75rem;
-  }
-
-  .sidebar-card textarea {
-    width: 100%;
-    background: var(--parchment);
-    border: 1px solid rgba(92,61,46,0.18);
-    border-radius: 6px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.8rem;
-    color: var(--text-dark);
-    padding: 0.65rem 0.85rem;
-    resize: vertical;
-    min-height: 140px;
-    outline: none;
-    line-height: 1.55;
-    transition: border-color 0.2s;
-  }
-  .sidebar-card textarea:focus { border-color: var(--terracotta); }
-  .sidebar-card textarea::placeholder { color: var(--text-light); }
-
-  .btn-save {
-    margin-top: 0.6rem;
-    width: 100%;
-    padding: 0.6rem 1rem;
-    background: var(--terracotta);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.15s;
-    letter-spacing: 0.02em;
-  }
-  .btn-save:hover { background: var(--clay); }
-
-  .btn-clear {
-    margin-top: 0.4rem;
-    width: 100%;
-    padding: 0.5rem 1rem;
-    background: none;
-    color: var(--text-light);
-    border: 1px solid rgba(92,61,46,0.15);
-    border-radius: 6px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem;
-    cursor: pointer;
-    transition: color 0.15s, border-color 0.15s;
-  }
-  .btn-clear:hover { color: var(--soil); border-color: var(--stone); }
-
-  .save-status {
-    font-size: 0.75rem;
-    color: var(--sage);
-    margin-top: 0.4rem;
-    min-height: 1rem;
-    text-align: center;
-  }
-
-  .last-saved {
-    font-size: 0.72rem;
-    color: var(--text-light);
-    margin-top: 0.5rem;
-    text-align: center;
-  }
-
   /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
-    .coaching-layout { grid-template-columns: 1fr; }
-    .coaching-sidebar { order: -1; }
   }
   @media (max-width: 700px) {
     header, .search-bar, nav, main { padding-left: 1.25rem; padding-right: 1.25rem; }
     .today-grid { grid-template-columns: 1fr; }
     .card-grid { grid-template-columns: 1fr; }
-    .coaching-note-card { padding: 1.25rem; }
   }
 
   ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -447,7 +275,6 @@
   <button data-section="clients">Clients</button>
   <button data-section="nutrition">Nutrition</button>
   <button data-section="admin">Admin</button>
-  <button data-section="coaching">CrossFit Coaching</button>
 </nav>
 
 <main>
@@ -481,8 +308,8 @@
         <div class="quick-link" onclick="switchTab('programming')">
           <span class="dot" style="--dot-color: var(--clay)"></span> Review a program template
         </div>
-        <div class="quick-link" onclick="switchTab('coaching')">
-          <span class="dot" style="--dot-color: var(--stone)"></span> Wednesday coaching note
+        <div class="quick-link" onclick="switchTab('nutrition')">
+          <span class="dot" style="--dot-color: var(--stone)"></span> Nutrition references
         </div>
       </div>
     </div>
@@ -695,45 +522,6 @@
     </div>
   </div>
 
-  <!-- WEDNESDAY COACHING -->
-  <div class="section" id="coaching">
-    <div class="section-header">
-      <h2>CrossFit Coaching</h2>
-      <button class="open-drive" onclick="showEdit()">Update note ↗</button>
-    </div>
-
-    <div class="coaching-layout">
-
-      <!-- Note display -->
-      <div class="coaching-note-card">
-        <div id="coaching-display">
-          <div class="coaching-empty">
-            <div class="empty-icon">📋</div>
-            <p>No note yet.<br>Paste your formatted note from Claude<br>using the panel on the right.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Sidebar -->
-      <div class="coaching-sidebar">
-        <div class="sidebar-card" id="edit-panel">
-          <h3>Paste note from Claude</h3>
-          <textarea id="note-input" placeholder="Paste the formatted coaching note here…"></textarea>
-          <button class="btn-save" onclick="saveNote()">Save Note</button>
-          <button class="btn-clear" onclick="clearNote()">Clear saved note</button>
-          <div class="save-status" id="save-status"></div>
-        </div>
-        <div class="sidebar-card">
-          <h3>This Wednesday</h3>
-          <div id="coaching-meta" style="font-size:0.82rem; color:var(--text-mid); line-height:1.7;">
-            No note saved yet.
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
 </main>
 
 <script>
@@ -785,7 +573,6 @@
     { title: 'Session Rate Sheet', section: 'Admin', tab: 'admin' },
     { title: 'Progress Check-In Template', section: 'Admin', tab: 'admin' },
     { title: 'Session Notes Template', section: 'Admin', tab: 'admin' },
-    { title: 'CrossFit Coaching Note', section: 'Coaching', tab: 'coaching' },
   ];
 
   const searchInput = document.getElementById('search-input');
@@ -814,92 +601,6 @@
   document.addEventListener('click', function(e) {
     if (!e.target.closest('.search-wrap')) searchResults.classList.remove('show');
   });
-
-  // ── COACHING NOTE ──
-  function renderNote(text) {
-    const display = document.getElementById('coaching-display');
-    if (!text || !text.trim()) {
-      display.innerHTML = '<div class="coaching-empty"><div class="empty-icon">📋</div><p>No note yet.<br>Paste your formatted note from Claude<br>using the panel on the right.</p></div>';
-      document.getElementById('coaching-meta').textContent = 'No note saved yet.';
-      return;
-    }
-
-    const lines = text.split('\n');
-    let subjectLine = '';
-    let bodyHtml = '';
-
-    for (const line of lines) {
-      if (line.toLowerCase().startsWith('subject:')) {
-        subjectLine = line.replace(/^subject:\s*/i, '').trim();
-        continue;
-      }
-      // Bold header: **text** or <b>text</b>
-      const boldMatch = line.match(/^\*\*(.+?)\*\*$/) || line.match(/^<b>(.+?)<\/b>$/);
-      if (boldMatch) {
-        bodyHtml += `<span class="c-header">${boldMatch[1]}</span>`;
-        continue;
-      }
-      if (line.trim().startsWith('•') || line.trim().startsWith('- ')) {
-        const content = line.replace(/^\s*[•\-]\s*/, '');
-        bodyHtml += `<span class="c-bullet">${fmt(content)}</span>`;
-        continue;
-      }
-      if (line.trim() === '') {
-        bodyHtml += `<span class="c-line">&nbsp;</span>`;
-        continue;
-      }
-      bodyHtml += `<span class="c-line">${fmt(line)}</span>`;
-    }
-
-    const subject = subjectLine || 'Coaching Note';
-    display.innerHTML =
-      `<div class="note-subject">${subject}</div>` +
-      `<div class="coaching-note-body">${bodyHtml}</div>`;
-
-    document.getElementById('coaching-meta').innerHTML =
-      `<strong style="color:var(--bark)">${subject}</strong><br>Saved to dashboard`;
-  }
-
-  function fmt(text) {
-    return text.replace(/__(.+?)__/g, '<em>$1</em>');
-  }
-
-  async function loadNote() {
-    try {
-      const result = await window.storage.get('coaching_note');
-      if (result && result.value) renderNote(result.value);
-    } catch (e) { /* no saved note */ }
-  }
-
-  async function saveNote() {
-    const text = document.getElementById('note-input').value.trim();
-    if (!text) return;
-    try {
-      await window.storage.set('coaching_note', text);
-      renderNote(text);
-      document.getElementById('note-input').value = '';
-      document.getElementById('save-status').textContent = 'Saved ✓';
-      setTimeout(() => { document.getElementById('save-status').textContent = ''; }, 2500);
-    } catch (e) {
-      document.getElementById('save-status').textContent = 'Save failed.';
-    }
-  }
-
-  async function clearNote() {
-    try {
-      await window.storage.delete('coaching_note');
-      renderNote('');
-      document.getElementById('save-status').textContent = 'Cleared.';
-      setTimeout(() => { document.getElementById('save-status').textContent = ''; }, 2000);
-    } catch (e) {}
-  }
-
-  function showEdit() {
-    document.getElementById('note-input').focus();
-    document.getElementById('note-input').scrollIntoView({ behavior: 'smooth' });
-  }
-
-  loadNote();
 </script>
 </body>
 </html>
